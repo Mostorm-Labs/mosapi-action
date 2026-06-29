@@ -7,7 +7,7 @@ test('uploads single file successfully with token and fileInfo', async (t) => {
     return Promise.resolve(new Response(JSON.stringify([{ id: 123, url: 'http://example.com' }]), { status: 200 }));
   });
 
-  const result = await uploadFile('test-resource/sample.html', {
+  const result = await uploadFile('test-resource/dist/launcher-setup.exe', {
     token: 'my-token',
     folderId: '190',
     endpoint: 'http://example.com/upload',
@@ -28,7 +28,7 @@ test('retries on failure up to max retries', async (t) => {
     return Promise.resolve(new Response(JSON.stringify([{ id: 456 }]), { status: 200 }));
   });
 
-  const result = await uploadFile('test-resource/sample.html', {
+  const result = await uploadFile('test-resource/dist/launcher-setup.exe', {
     token: 'my-token',
     folderId: '190',
     endpoint: 'http://example.com/upload',

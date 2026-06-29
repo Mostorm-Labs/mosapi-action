@@ -26,4 +26,6 @@ jobs:
         version: '1.0.2'
         product-slug: 'nearhub-launch-windows'
         artifacts: |
-          test-resource/*
+          test-resource/dist/*.exe
+          test-resource/dist/*.zip
+          !test-resource/dist/*.map
