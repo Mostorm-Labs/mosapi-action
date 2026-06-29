@@ -57,8 +57,8 @@ test('sendWeChatNotification sends structured markdown message', async (t) => {
   const content = postBody.markdown.content;
   assert.match(content, /\*\*项目名称\*\*：MyTestProject/);
   assert.match(content, /\*\*版本号\*\*：1\.0\.9/);
-  assert.match(content, /\[app\.exe\]\(https:\/\/mosapi\.example\.com\/uploads\/app\.exe\)/);
-  assert.match(content, /\*\*管理后台\*\*：\[点击前往 Mosapi 查看\]\(https:\/\/mosapi\.example\.com\/admin\/content-manager\/collectionType\/api::update\.update\/777\)/);
+  assert.match(content, /app\.exe: https:\/\/mosapi\.example\.com\/uploads\/app\.exe/);
+  assert.match(content, /\*\*管理后台\*\*：点击前往 Mosapi 查看 https:\/\/mosapi\.example\.com\/admin\/content-manager\/collectionType\/api::update\.update\/777/);
   assert.match(content, /📝 本次更新内容/);
   assert.match(content, /Added WeChat Enterprise robot support/);
 });
