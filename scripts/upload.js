@@ -1,5 +1,18 @@
 import fs from 'fs';
 import path from 'path';
+import glob from '@actions/glob';
+
+export async function resolveFiles(artifactsPattern) {
+  const globber = await glob.create(artifactsPattern);
+  const matchedPaths = await globber.glob();
+  const files = [];
+  for (const p of matchedPaths) {
+    if (fs.statSync(p).isFile()) {
+      files.push(p);
+    }
+  }
+  return files;
+}
 
 export async function run(env = process.env) {
   const token = env.INPUT_TOKEN;
