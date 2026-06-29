@@ -1,6 +1,9 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   main:
@@ -19,7 +22,7 @@ jobs:
         token: ${{ secrets.MOSAPI_TOKEN }}
         folder-id: ${{ vars.MOSAPI_FOLDER_ID }}
         product-id: ${{ vars.MOSAPI_PRODUCT_ID }}
-        version: '1.0.2'
+        version: ${{ github.ref_name }}
         product-slug: 'mosapi-action-test'
         wechat-webhook-key: ${{ secrets.WECOM_ROBOTS_KEY }}
         artifacts: |
