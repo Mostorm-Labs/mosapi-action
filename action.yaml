@@ -1,0 +1,68 @@
+name: 'Mosapi Upload Action'
+description: 'Upload build artifacts to a Mosapi CMS asset folder and create update record'
+author: 'Lichenghuan'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  token:
+    required: true
+    description: 'Mosapi authorization token'
+  artifacts:
+    required: true
+    description: 'Glob patterns for files to upload'
+  folder-id:
+    required: true
+    description: 'Mosapi CMS asset folder id'
+  product-id:
+    required: true
+    description: 'Mosapi product ID to associate the update with'
+  version:
+    required: true
+    description: 'Release version'
+  endpoint:
+    required: false
+    default: 'https://mosapi-admin.auditoryworks.co/v1/upload'
+    description: 'Mosapi upload endpoint'
+  if-no-files-found:
+    required: false
+    default: 'error'
+    description: 'Action when no files match: error, warn, or ignore'
+  retries:
+    required: false
+    default: '3'
+    description: 'Upload retry count per file'
+  changelog:
+    required: false
+    description: 'Changelog description for the update record. If empty, reads from temp_changelog.txt or uses default.'
+  state:
+    required: false
+    default: 'alpha'
+    description: 'Update state (alpha, beta, release)'
+  type:
+    required: false
+    default: 'optional'
+    description: 'Update type (optional, force)'
+  product-slug:
+    required: false
+    default: 'nearhub-launch-windows'
+    description: 'Product slug prefix for the update name'
+outputs:
+  uploaded-count:
+    description: 'Number of files uploaded successfully'
+  uploaded-files:
+    description: 'JSON array containing local file metadata and Mosapi response fields'
+  update-id:
+    description: 'ID of the created Mosapi update record'
+  update-slug:
+    description: 'Slug of the created Mosapi update record'
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies
+      run: npm ci --omit=dev
+      shell: bash
+      working-directory: ${{ github.action_path }}
+    - name: Run Upload Script
+      run: node ${{ github.action_path }}/scripts/upload.js
+      shell: bash
