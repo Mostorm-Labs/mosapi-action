@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Upload artifacts to Mosapi CMS
-      uses: Mostorm-Labs/mosapi-action@v1
+      uses: Mostorm-Labs/mosapi-action@v1.0.0
       with:
         token: ${{ secrets.MOSAPI_TOKEN }}
         folder-id: ${{ vars.MOSAPI_FOLDER_ID }}
