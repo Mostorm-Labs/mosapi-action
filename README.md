@@ -38,6 +38,8 @@ steps:
 | `state` | no | `alpha` | Update state (`alpha`, `beta`, `release`) |
 | `type` | no | `optional` | Update type (`optional`, `force`) |
 | `product-slug` | yes | | Product slug prefix for the update name |
+| `wechat-webhook-key` | no | | Optional WeChat enterprise robot webhook key |
+| `project-name` | no | | Optional display name of the project. Defaults to `product-slug` |
 
 ## Outputs
 

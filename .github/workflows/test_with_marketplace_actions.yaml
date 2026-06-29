@@ -25,6 +25,7 @@ jobs:
         product-id: ${{ vars.MOSAPI_PRODUCT_ID }}
         version: '1.0.2'
         product-slug: 'mosapi-action-test'
+        wechat-webhook-key: ${{ secrets.WECOM_ROBOTS_KEY }}
         artifacts: |
           test-resource/dist/*.exe
           test-resource/dist/*.zip

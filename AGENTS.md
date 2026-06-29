@@ -33,6 +33,8 @@ This is a GitHub Action that automatically uploads build artifacts to a Mosapi C
 - `changelog`: Description of the update record. If not provided, it resolves from the workspace's `temp_changelog.txt` if present, or uses a default string
 - `state`: Update state (defaults to `alpha`, supports `alpha`, `beta`, `release`)
 - `type`: Update type (defaults to `optional`, supports `optional`, `force`)
+- `wechat-webhook-key`: Optional WeChat enterprise robot webhook key
+- `project-name`: Optional display name of the project (defaults to `product-slug`)
 
 ### Outputs
 - `uploaded-count`: Number of successfully uploaded files
