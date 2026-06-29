@@ -1,0 +1,28 @@
+name: Manually Triggered Workflows
+
+# Test in local via act
+# act --input trigger=manually --secret-file my.secrets --var-file my.variables --pull=false --container-architecture linux/amd64 -W .github/workflows/test_with_marketplace_actions.yaml
+on:
+  workflow_dispatch:
+    inputs:
+      trigger:
+        description: 'Pass Inputs to Manually Triggered Workflows'
+        default: 'manually'
+
+jobs:
+  test_from_marketplace:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Upload artifacts to Mosapi CMS
+      uses: Mostorm-Labs/mosapi-action@v1
+      with:
+        token: ${{ secrets.MOSAPI_TOKEN }}
+        folder-id: ${{ vars.MOSAPI_FOLDER_ID }}
+        product-id: ${{ vars.MOSAPI_PRODUCT_ID }}
+        version: '1.0.2'
+        artifacts: |
+          test-resource/*
