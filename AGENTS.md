@@ -24,6 +24,7 @@ This is a GitHub Action that automatically uploads build artifacts to a Mosapi C
 - `folder-id`: Mosapi CMS asset folder ID (e.g. `190`)
 - `product-id`: Mosapi product ID to associate the update with (e.g. `230`)
 - `version`: Release version string (e.g. `1.0.2`)
+- `product-slug`: Product slug prefix for slug name generation (e.g. `nearhub-launch-windows`)
 
 ### Optional Inputs
 - `endpoint`: Mosapi upload endpoint (defaults to `https://mosapi-admin.auditoryworks.co/v1/upload`)
@@ -32,7 +33,6 @@ This is a GitHub Action that automatically uploads build artifacts to a Mosapi C
 - `changelog`: Description of the update record. If not provided, it resolves from the workspace's `temp_changelog.txt` if present, or uses a default string
 - `state`: Update state (defaults to `alpha`, supports `alpha`, `beta`, `release`)
 - `type`: Update type (defaults to `optional`, supports `optional`, `force`)
-- `product-slug`: Product slug prefix for slug name generation (defaults to `nearhub-launch-windows`)
 
 ### Outputs
 - `uploaded-count`: Number of successfully uploaded files

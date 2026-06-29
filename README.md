@@ -37,7 +37,7 @@ steps:
 | `changelog` | no | | Changelog description for the update record. If empty, reads from `temp_changelog.txt` or uses default |
 | `state` | no | `alpha` | Update state (`alpha`, `beta`, `release`) |
 | `type` | no | `optional` | Update type (`optional`, `force`) |
-| `product-slug` | no | `nearhub-launch-windows` | Product slug prefix for the update name |
+| `product-slug` | yes | | Product slug prefix for the update name |
 
 ## Outputs
 
