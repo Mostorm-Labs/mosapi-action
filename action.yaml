@@ -65,3 +65,16 @@ runs:
     - name: Run Upload Script
       run: node ${{ github.action_path }}/scripts/upload.js
       shell: bash
+      env:
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_ARTIFACTS: ${{ inputs.artifacts }}
+        INPUT_FOLDER_ID: ${{ inputs.folder-id }}
+        INPUT_PRODUCT_ID: ${{ inputs.product-id }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_ENDPOINT: ${{ inputs.endpoint }}
+        INPUT_IF_NO_FILES_FOUND: ${{ inputs.if-no-files-found }}
+        INPUT_RETRIES: ${{ inputs.retries }}
+        INPUT_CHANGELOG: ${{ inputs.changelog }}
+        INPUT_STATE: ${{ inputs.state }}
+        INPUT_TYPE: ${{ inputs.type }}
+        INPUT_PRODUCT_SLUG: ${{ inputs.product-slug }}
