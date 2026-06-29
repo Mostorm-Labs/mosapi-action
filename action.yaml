@@ -46,6 +46,12 @@ inputs:
   product-slug:
     required: true
     description: 'Product slug prefix for the update name'
+  wechat-webhook-key:
+    required: false
+    description: 'Optional WeChat enterprise robot webhook key'
+  project-name:
+    required: false
+    description: 'Optional display name of the project'
 outputs:
   uploaded-count:
     description: 'Number of files uploaded successfully'
@@ -78,3 +84,5 @@ runs:
         INPUT_STATE: ${{ inputs.state }}
         INPUT_TYPE: ${{ inputs.type }}
         INPUT_PRODUCT_SLUG: ${{ inputs.product-slug }}
+        INPUT_WECHAT_WEBHOOK_KEY: ${{ inputs.wechat-webhook-key }}
+        INPUT_PROJECT_NAME: ${{ inputs.project-name }}

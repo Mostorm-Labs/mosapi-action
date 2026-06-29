@@ -9,6 +9,75 @@ export function getFileMd5(filePath) {
   return crypto.createHash('md5').update(fileContent).digest('hex');
 }
 
+export function getAbsoluteUrl(fileUrl, endpoint) {
+  if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+    return fileUrl;
+  }
+  try {
+    const urlObj = new URL(endpoint);
+    return `${urlObj.origin}${fileUrl}`;
+  } catch (err) {
+    return fileUrl;
+  }
+}
+
+export async function sendWeChatNotification({
+  webhookKey,
+  projectName,
+  version,
+  uploadedFiles,
+  updateRecord,
+  changelog,
+  endpoint
+}) {
+  const messageList = [
+    `**项目名称**：${projectName}`,
+    `**版本号**：${version}`
+  ];
+
+  if (uploadedFiles.length > 0) {
+    messageList.push(`**发布文件**：`);
+    uploadedFiles.forEach(file => {
+      const absUrl = getAbsoluteUrl(file.url, endpoint);
+      messageList.push(`- [${file.name}](${absUrl})`);
+    });
+  }
+
+  if (updateRecord && updateRecord.id) {
+    let adminOrigin = 'https://mosapi-admin.auditoryworks.co';
+    try {
+      adminOrigin = new URL(endpoint).origin;
+    } catch (_) {}
+    messageList.push(`**管理后台**：[点击前往 Mosapi 查看](${adminOrigin}/admin/content-manager/collectionType/api::update.update/${updateRecord.id})`);
+  }
+
+  if (changelog) {
+    messageList.push(`\n**📝 本次更新内容**：\n${changelog}`);
+  }
+
+  const payload = {
+    msgtype: 'markdown',
+    markdown: {
+      content: messageList.join('\n')
+    }
+  };
+
+  const response = await fetch(`https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${webhookKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`WeChat notification failed. Status: ${response.status}. Response: ${errorBody.substring(0, 100)}`);
+  }
+
+  return response.json();
+}
+
 export const actionCore = {
   setOutput: coreModule.setOutput,
   warning: coreModule.warning,
@@ -252,6 +321,27 @@ export async function run(env = process.env) {
   actionCore.info(`Created update record successfully. ID: ${updateRecord.id}, Slug: ${updateRecord.slug}`);
   actionCore.setOutput('update-id', updateRecord.id);
   actionCore.setOutput('update-slug', updateRecord.slug);
+
+  const wechatWebhookKey = env.INPUT_WECHAT_WEBHOOK_KEY;
+  const projectName = env.INPUT_PROJECT_NAME || productSlug;
+
+  if (wechatWebhookKey) {
+    actionCore.info('Sending WeChat notification...');
+    try {
+      await sendWeChatNotification({
+        webhookKey: wechatWebhookKey,
+        projectName,
+        version,
+        uploadedFiles: uploadedFilesResult,
+        updateRecord,
+        changelog,
+        endpoint
+      });
+      actionCore.info('WeChat notification sent successfully.');
+    } catch (err) {
+      actionCore.warning(`Failed to send WeChat notification: ${err.message}`);
+    }
+  }
 }
 
 if (process.argv[1] && (process.argv[1].endsWith('upload.js') || process.argv[1].endsWith('upload'))) {
