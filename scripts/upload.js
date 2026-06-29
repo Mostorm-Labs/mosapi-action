@@ -1,6 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import glob from '@actions/glob';
+import * as coreModule from '@actions/core';
+
+export const actionCore = {
+  setOutput: coreModule.setOutput,
+  warning: coreModule.warning,
+  info: coreModule.info,
+  setFailed: coreModule.setFailed
+};
 
 export async function resolveFiles(artifactsPattern) {
   const globber = await glob.create(artifactsPattern);
@@ -175,5 +183,66 @@ export async function run(env = process.env) {
   const type = env.INPUT_TYPE || 'optional';
   const productSlug = env.INPUT_PRODUCT_SLUG || 'nearhub-launch-windows';
 
-  return { token, artifacts, folderId, productId, version, endpoint, ifNoFilesFound, retries, changelog, state, type, productSlug };
+  const files = await resolveFiles(artifacts);
+
+  if (files.length === 0) {
+    if (ifNoFilesFound === 'error') {
+      throw new Error('No files found matching the specified pattern.');
+    } else if (ifNoFilesFound === 'warn') {
+      actionCore.warning('No files found matching the specified pattern.');
+    } else {
+      actionCore.info('No files found matching the specified pattern.');
+    }
+    actionCore.setOutput('uploaded-count', 0);
+    actionCore.setOutput('uploaded-files', JSON.stringify([]));
+    return;
+  }
+
+  actionCore.info(`Found ${files.length} file(s) to upload.`);
+  const uploadedFilesResult = [];
+  const otaFiles = [];
+
+  for (const file of files) {
+    actionCore.info(`Uploading ${file}...`);
+    const result = await uploadFile(file, { token, folderId, endpoint, retries });
+    actionCore.info(`Uploaded ${file} -> id=${result.id}`);
+    uploadedFilesResult.push({
+      path: file,
+      name: path.basename(file),
+      id: result.id,
+      url: result.url,
+      ...result
+    });
+    otaFiles.push({
+      type: path.basename(file),
+      file: { id: result.id }
+    });
+  }
+
+  actionCore.info(`Uploaded ${files.length} file(s) successfully.`);
+  actionCore.setOutput('uploaded-count', files.length);
+  actionCore.setOutput('uploaded-files', JSON.stringify(uploadedFilesResult));
+
+  actionCore.info('Creating update record on Mosapi...');
+  const updateRecord = await createUpdateRecord({
+    endpoint,
+    token,
+    productId,
+    version,
+    changelog,
+    state,
+    type,
+    productSlug,
+    otaFiles
+  });
+
+  actionCore.info(`Created update record successfully. ID: ${updateRecord.id}, Slug: ${updateRecord.slug}`);
+  actionCore.setOutput('update-id', updateRecord.id);
+  actionCore.setOutput('update-slug', updateRecord.slug);
+}
+
+if (process.argv[1] && (process.argv[1].endsWith('upload.js') || process.argv[1].endsWith('upload'))) {
+  run().catch(err => {
+    actionCore.setFailed(err.message);
+  });
 }
