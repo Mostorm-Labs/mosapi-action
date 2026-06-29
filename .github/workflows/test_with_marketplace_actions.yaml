@@ -24,7 +24,7 @@ jobs:
         folder-id: ${{ vars.MOSAPI_FOLDER_ID }}
         product-id: ${{ vars.MOSAPI_PRODUCT_ID }}
         version: '1.0.2'
-        product-slug: 'nearhub-launch-windows'
+        product-slug: 'mosapi-action-test'
         artifacts: |
           test-resource/dist/*.exe
           test-resource/dist/*.zip
