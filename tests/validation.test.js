@@ -36,3 +36,10 @@ test('throws if version is missing', async () => {
     /Input required and not supplied: version/
   );
 });
+
+test('throws if product-slug is missing', async () => {
+  await assert.rejects(
+    run({ INPUT_TOKEN: 'test-token', INPUT_ARTIFACTS: '*', INPUT_FOLDER_ID: '190', INPUT_PRODUCT_ID: '230', INPUT_VERSION: '1.0.2' }),
+    /Input required and not supplied: product-slug/
+  );
+});

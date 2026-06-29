@@ -44,8 +44,7 @@ inputs:
     default: 'optional'
     description: 'Update type (optional, force)'
   product-slug:
-    required: false
-    default: 'nearhub-launch-windows'
+    required: true
     description: 'Product slug prefix for the update name'
 outputs:
   uploaded-count:

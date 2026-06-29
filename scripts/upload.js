@@ -158,12 +158,14 @@ export async function run(env = process.env) {
   const folderId = env.INPUT_FOLDER_ID;
   const productId = env.INPUT_PRODUCT_ID;
   const version = env.INPUT_VERSION;
+  const productSlug = env.INPUT_PRODUCT_SLUG;
 
   if (!token) throw new Error('Input required and not supplied: token');
   if (!artifacts) throw new Error('Input required and not supplied: artifacts');
   if (!folderId) throw new Error('Input required and not supplied: folder-id');
   if (!productId) throw new Error('Input required and not supplied: product-id');
   if (!version) throw new Error('Input required and not supplied: version');
+  if (!productSlug) throw new Error('Input required and not supplied: product-slug');
 
   const endpoint = env.INPUT_ENDPOINT || 'https://mosapi-admin.auditoryworks.co/v1/upload';
   const ifNoFilesFound = env.INPUT_IF_NO_FILES_FOUND || 'error';
@@ -181,7 +183,6 @@ export async function run(env = process.env) {
 
   const state = env.INPUT_STATE || 'alpha';
   const type = env.INPUT_TYPE || 'optional';
-  const productSlug = env.INPUT_PRODUCT_SLUG || 'nearhub-launch-windows';
 
   const files = await resolveFiles(artifacts);
 

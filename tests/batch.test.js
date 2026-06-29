@@ -9,6 +9,7 @@ test('throws error if no files found and if-no-files-found is error', async () =
     INPUT_FOLDER_ID: '190',
     INPUT_PRODUCT_ID: '230',
     INPUT_VERSION: '1.0.2',
+    INPUT_PRODUCT_SLUG: 'nearhub-launch-windows',
     INPUT_IF_NO_FILES_FOUND: 'error'
   };
 
@@ -22,6 +23,7 @@ test('does not throw and sets output if no files found and if-no-files-found is 
     INPUT_FOLDER_ID: '190',
     INPUT_PRODUCT_ID: '230',
     INPUT_VERSION: '1.0.2',
+    INPUT_PRODUCT_SLUG: 'nearhub-launch-windows',
     INPUT_IF_NO_FILES_FOUND: 'ignore'
   };
 
