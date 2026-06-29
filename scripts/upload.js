@@ -1,7 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import glob from '@actions/glob';
 import * as coreModule from '@actions/core';
+
+export function getFileMd5(filePath) {
+  const fileContent = fs.readFileSync(filePath);
+  return crypto.createHash('md5').update(fileContent).digest('hex');
+}
 
 export const actionCore = {
   setOutput: coreModule.setOutput,
@@ -207,16 +213,22 @@ export async function run(env = process.env) {
     actionCore.info(`Uploading ${file}...`);
     const result = await uploadFile(file, { token, folderId, endpoint, retries });
     actionCore.info(`Uploaded ${file} -> id=${result.id}`);
+
+    const md5 = getFileMd5(file);
+    actionCore.info(`Calculated MD5 for ${file} -> ${md5}`);
+
     uploadedFilesResult.push({
       path: file,
       name: path.basename(file),
       id: result.id,
       url: result.url,
+      md5,
       ...result
     });
     otaFiles.push({
       type: path.basename(file),
-      file: { id: result.id }
+      file: { id: result.id },
+      md5
     });
   }
 
