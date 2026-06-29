@@ -39,7 +39,7 @@ export async function sendWeChatNotification({
     messageList.push(`**发布文件**：`);
     uploadedFiles.forEach(file => {
       const absUrl = getAbsoluteUrl(file.url, endpoint);
-      messageList.push(`- ${file.name}: ${absUrl}`);
+      messageList.push(`- ${file.name}: [${absUrl}](${absUrl})`);
     });
   }
 
@@ -48,7 +48,8 @@ export async function sendWeChatNotification({
     try {
       adminOrigin = new URL(endpoint).origin;
     } catch (_) {}
-    messageList.push(`**管理后台**：点击前往 Mosapi 查看 ${adminOrigin}/admin/content-manager/collectionType/api::update.update/${updateRecord.id}`);
+    const adminUrl = `${adminOrigin}/admin/content-manager/collectionType/api::update.update/${updateRecord.id}`;
+    messageList.push(`**管理后台**：点击前往 Mosapi 查看 [${adminUrl}](${adminUrl})`);
   }
 
   if (changelog) {
