@@ -11,7 +11,10 @@ on:
 
 jobs:
   test_from_marketplace:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
     - name: Checkout repository
