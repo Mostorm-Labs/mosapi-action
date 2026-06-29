@@ -14,6 +14,49 @@ export async function resolveFiles(artifactsPattern) {
   return files;
 }
 
+export async function uploadFile(filePath, { token, folderId, endpoint, retries }) {
+  const fileName = path.basename(filePath);
+  const formData = new FormData();
+  const fileContent = fs.readFileSync(filePath);
+  const fileBlob = new Blob([fileContent]);
+  formData.append('files', fileBlob, fileName);
+  formData.append('fileInfo', JSON.stringify({ name: fileName, folder: folderId }));
+
+  let attempt = 0;
+  const maxAttempts = 1 + retries;
+
+  while (attempt < maxAttempts) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: token,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const bodyText = await response.text();
+        const excerpt = bodyText.substring(0, 100);
+        throw new Error(`Upload failed with status: ${response.status}. Response: ${excerpt}`);
+      }
+
+      const responseData = await response.json();
+      if (!responseData || !responseData[0]) {
+        throw new Error('Upload succeeded but returned empty list');
+      }
+
+      return responseData[0];
+    } catch (err) {
+      attempt++;
+      console.log(`Attempt ${attempt} failed for ${fileName}:`, err.message);
+      if (attempt >= maxAttempts) {
+        throw err;
+      }
+    }
+  }
+}
+
 export async function run(env = process.env) {
   const token = env.INPUT_TOKEN;
   const artifacts = env.INPUT_ARTIFACTS;
