@@ -1,5 +1,7 @@
 # Mosapi Upload Action Implementation Plan
 
+> **Historical note:** This is the original task-by-task implementation plan. It is not the current source of truth for the action interface; use `action.yaml`, `scripts/upload.js`, tests, and `README.md` for current behavior. Known drift has been annotated below.
+>
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Build a Windows-friendly GitHub Action that uploads build artifacts to a Mosapi CMS asset folder and creates an update record.
@@ -715,8 +717,7 @@ inputs:
     default: 'optional'
     description: 'Update type (optional, force)'
   product-slug:
-    required: false
-    default: 'nearhub-launch-windows'
+    required: true
     description: 'Product slug prefix for the update name'
 outputs:
   uploaded-count:
@@ -754,8 +755,8 @@ git commit -m "feat: update action.yaml schema for update record creation"
 
 **Files:**
 - Modify: `.github/workflows/test_with_local_actions.yaml`
-- Modify: `my.secrets`
-- Modify: `my.variables`
+- Local only: `my.secrets`
+- Local only: `my.variables`
 
 **Step 1: Write the failing test**
 Update `.github/workflows/test_with_local_actions.yaml` to use the new inputs:
@@ -792,7 +793,7 @@ Expected: Fail (credentials not configured).
 Verify `act` fails.
 
 **Step 3: Write minimal implementation**
-Configure `my.secrets` and `my.variables` with test environment variables:
+Create local-only `my.secrets` and `my.variables` files with test environment variables. These files are ignored by git and must not be committed.
 `my.secrets`:
 ```text
 MOSAPI_TOKEN=your-token-here
@@ -808,8 +809,8 @@ Run the `act` command with actual credentials to verify the upload is successful
 
 **Step 5: Commit**
 ```bash
-git add .github/workflows/test_with_local_actions.yaml my.secrets my.variables
-git commit -m "test: configure workflow and secrets for integration testing"
+git add .github/workflows/test_with_local_actions.yaml
+git commit -m "test: configure workflow for integration testing"
 ```
 
 ---
