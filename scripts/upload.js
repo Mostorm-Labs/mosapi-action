@@ -287,13 +287,15 @@ export async function run(env = process.env) {
     const md5 = getFileMd5(file);
     actionCore.info(`Calculated MD5 for ${file} -> ${md5}`);
 
+    const absUrl = getAbsoluteUrl(result.url, endpoint);
     uploadedFilesResult.push({
+      ...result,
       path: file,
       name: path.basename(file),
       id: result.id,
-      url: result.url,
-      md5,
-      ...result
+      url: absUrl,
+      rawUrl: result.url,
+      md5
     });
     otaFiles.push({
       type: path.basename(file),
