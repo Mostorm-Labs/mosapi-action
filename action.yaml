@@ -55,12 +55,16 @@ inputs:
 outputs:
   uploaded-count:
     description: 'Number of files uploaded successfully'
+    value: ${{ steps.upload_script.outputs.uploaded-count }}
   uploaded-files:
     description: 'JSON array containing local file metadata and Mosapi response fields'
+    value: ${{ steps.upload_script.outputs.uploaded-files }}
   update-id:
     description: 'ID of the created Mosapi update record'
+    value: ${{ steps.upload_script.outputs.update-id }}
   update-slug:
     description: 'Slug of the created Mosapi update record'
+    value: ${{ steps.upload_script.outputs.update-slug }}
 runs:
   using: composite
   steps:
@@ -69,6 +73,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
     - name: Run Upload Script
+      id: upload_script
       run: node "$GITHUB_ACTION_PATH/scripts/upload.js"
       shell: bash
       env:

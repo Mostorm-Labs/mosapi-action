@@ -12,7 +12,8 @@ steps:
   uses: actions/checkout@v3
 
 - name: Upload artifacts to Mosapi CMS
-  uses: Mostorm-Labs/mosapi-action@v1.0.0
+  id: mosapi_upload
+  uses: Mostorm-Labs/mosapi-action@v1.0.1
   with:
     token: ${{ secrets.MOSAPI_TOKEN }}
     folder-id: '190'
@@ -24,6 +25,12 @@ steps:
       dist/*.exe
       dist/*.zip
       !dist/*.map
+
+- name: Use uploaded files
+  run: |
+    echo "Uploaded count: ${{ steps.mosapi_upload.outputs.uploaded-count }}"
+    echo "Files JSON: ${{ steps.mosapi_upload.outputs.uploaded-files }}"
+    echo "Update ID: ${{ steps.mosapi_upload.outputs.update-id }}"
 ```
 
 ## Inputs
@@ -50,7 +57,7 @@ steps:
 | Name | Description |
 | --- | --- |
 | `uploaded-count` | Number of files uploaded successfully |
-| `uploaded-files` | JSON array containing local file metadata, Mosapi response fields, and the calculated `md5` checksum |
+| `uploaded-files` | JSON array containing uploaded file metadata (`name`, `path`, `id`, `url`, `md5`). The `url` field is resolved to an absolute URL accessible directly |
 | `update-id` | ID of the created Mosapi update record |
 | `update-slug` | Slug of the created Mosapi update record |
 
